@@ -4,3 +4,5 @@
  Point의 리스트 순서는 Dlib의 68 points Face landmark Detection와 동일합니다.<br>
  Point는 json으로 저장합니다.<br>
  반듯이 main에서 파라미터를 수정해야됩니다.
+
+![](https://github.com/SDPA-CE-Project/dataset-generator/blob/main/sample.jpg?raw=true)
