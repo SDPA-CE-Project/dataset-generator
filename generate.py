@@ -22,7 +22,7 @@ def generateJson(image_path, json_path, del_path, width, height, autoDelete):
         image_origin = cv2.imread(path)
         image_resize = cv2.resize(image_origin, (width, height))
 
-        image = mp.Image(image_format=mp.ImageFormat.SRGB, data=image_resize)
+        image = mp.Image(image_format=mp.ImageFormat.SRGB, data=image_origin)
 
         detection_result = detector.detect(image)
         #print(detection_result)
@@ -39,7 +39,8 @@ def generateJson(image_path, json_path, del_path, width, height, autoDelete):
         for landmarks in detection_result_list:
             for index in landmark_indices:
               landmark_point = landmarks[index]
-              landmark_coord = _normalized_to_pixel_coordinates(landmark_point.x, landmark_point.y, width, height)
+              #landmark_coord = _normalized_to_pixel_coordinates(landmark_point.x, landmark_point.y, width, height)
+              landmark_coord = (landmark_point.x*width, landmark_point.y*height)
               landmark_json.append(landmark_coord)
         
         json_file_path = os.path.join(json_path, os.path.splitext(filename)[0] + ".json")
@@ -48,7 +49,7 @@ def generateJson(image_path, json_path, del_path, width, height, autoDelete):
 
 if __name__ == "__main__":
   #face_landmarker_v2_with_blendshapes.task 모델 경로 설정
-  base_options = python.BaseOptions(model_asset_path='/Project/SPDA/faceML/dataset-generator/face_landmarker_v2_with_blendshapes.task')
+  base_options = python.BaseOptions(model_asset_path='/dataset-generator/face_landmarker_v2_with_blendshapes.task')
   ''' 
   Configurations options
   https://developers.google.com/mediapipe/solutions/vision/face_landmarker#configurations_options 
@@ -56,12 +57,16 @@ if __name__ == "__main__":
   options = vision.FaceLandmarkerOptions(base_options=base_options,
                                         output_face_blendshapes=True,
                                         output_facial_transformation_matrixes=True,
+                                        # min_face_detection_confidence=0.5,
+                                        # min_face_presence_confidence=0.5,
+                                        # min_tracking_confidence=0.5,
                                         num_faces=1)
   detector = vision.FaceLandmarker.create_from_options(options)
 
-  image_path = "./image"
-  json_path = "./image"
-  del_path = "./delete"
+  image_path = "/celeb/img_align_celeba"
+  json_path = "/celeb/img_align_celeba"
+
+  del_path = "/celeb/fail"
   width = 256
   height = 256
 
